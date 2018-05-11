@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import "../api/remoteReq.js"
 import TopUI from "./TopUI.js";
+import scheduleGraph from "./scheduleGraph.js";
 
 class App extends Component{
 	
@@ -64,46 +65,54 @@ class App extends Component{
 
 	docuJhon(){
 		
-    fetch("https://gist.githubusercontent.com/john-guerra/a0b840ba721ed771dd02d94a855cb595/raw/d68dba41f118bebc438a4f7ade9d27078efdfc09/sfBuses.json")
+    fetch("https://gist.githubusercontent.com/john-guerra/6a1716d792a20b029392501a5448479b/raw/e0cf741c90a756adeec848f245ec539e0d0cd629/sfNSchedule")
       .then(response => response.json())
       .then(data => {
-      	this.setState({ datosJhon: data.vehicle})
-      	console.log(data.vehicle)
+      	this.setState({ 
+      		datosJhon: data.route[2].tr[2].stop
+      	})
+      	console.log(">> DATOS QUE SE DEBEN MOSTRAR")
+      	console.log(data.route[2].tr[2].stop);
       });
 
-      return this.state.datosJhon.map((d) => {
-			return(
-				//<div key={m.tag}>
-					<p key={d.id}> {d.routeTag} </p>
-				//</div>
-				);
-		});
-
+  //     return this.state.datosJhon.map((d) => {
+		// 	return(
+		// 		//<div key={d.epochTime}>
+		// 			<p key={d.epochTime}> {d.tag} </p>
+		// 		//</div>
+		// 		);
+		// });
 }
 
-//no sé porque me sale _data_ = null
+//no sé porque me sale _data_ = null lo hago con UNA FUNCION de meteor en el servidor
 doc2JhonServer(){
 
 			Meteor.call("docJohn",(err,res) => {
             if(err) throw err;
-            console.log(">> DATOS DE JHON ");
+            console.log(">> DATOS DE JHON DESDE EL SERVER ");
             console.log(res);
+            this.setState();
         });
 }
 
 
 	
 	//se ejecuta apenas se carge el componente de react
-	// componentDidMount(){
-	// 	Meteor.call("agencyList",(err,res) => {
-	// 		if(err) throw err;
-	// 		console.log(res.data.agency);
-	// 		this.setState({
-	// 			agencias : res.data.agency
-	// 		})
-	// 	});	
+	componentDidMount(){
+		// Meteor.call("agencyList",(err,res) => {
+		// 	if(err) throw err;
+		// 	console.log(res.data.agency);
+		// 	this.setState({
+		// 		agencias : res.data.agency
+		// 	})
+		// });	
+		
+		// this.setState({
+		// 	docuJhon : this.docuJhon()
+		// });
+		{this.docuJhon()}
 	
-	// }
+	}
 
 	renderAgencias(){
 		//siempre existe el state agencias por que lo creo desde que monto el componente
@@ -126,9 +135,9 @@ doc2JhonServer(){
 		<div className="App">
 			<TopUI/>
 			<h3>App component React!</h3>
-			<button onClick={this.cargarData.bind(this)}>Agencias</button>			
-
-			{this.docuJhon()}
+			<button onClick={this.docuJhon.bind(this)}>Agencias</button>			
+			<scheduleGraph  buses = {this.state.datosJhon}> </scheduleGraph>
+			
 		</div>);
 	}
 }
