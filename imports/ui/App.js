@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import "../api/remoteReq.js"
 import TopUI from "./TopUI.js";
+import * as d3 from "d3";
 
 class App extends Component{
 	
@@ -10,7 +11,7 @@ class App extends Component{
 		super(props);
 		this.state={
 			agencias:[],
-			datosJhon : []
+			datosSchedule: {}
 		};
 	}
 
@@ -67,7 +68,12 @@ class App extends Component{
             if(err) throw err;
             console.log(">> SCHEDULE PARA LA TURA "+tagRoute+" DE LA AGENCIA: "+tagAgency);
             console.log(res);
+            this.setState({
+            	datosSchedule : res.data.route[0]
+            });
         }); 
+        // console.log("datos en el estado");
+        // console.log(this.datosSchedule);
 	}
 
 	docuJhon(){
@@ -91,18 +97,6 @@ class App extends Component{
 		// });
 }
 
-//no sé porque me sale _data_ = null lo hago con UNA FUNCION de meteor en el servidor
-doc2JhonServer(){
-
-			Meteor.call("docJohn",(err,res) => {
-            if(err) throw err;
-            console.log(">> DATOS DE JHON DESDE EL SERVER ");
-            console.log(res);
-            this.setState();
-        });
-}
-
-
 	renderAgencias(){
 		//siempre existe el state agencias por que lo creo desde que monto el componente
 		return this.state.agencias.map((m) => {
@@ -114,30 +108,104 @@ doc2JhonServer(){
 		});
 	}
 
+	renderBuses(){
+		if(!this.state.datosSchedule.tr)
+			return <p>Cargando...</p>;
+		let buses = []
+
+		this.state.datosSchedule.tr.forEach((bus)=>{
+			let route = bus.stop.filter((d) => d.content!=="--");
+			route.forEach((d) => d.date = new Date(+d.epochTime));    
+			buses.push(route);
+		});
+
+		// console.log("buses",buses);
+
+		// Estoy haciendo el map para un solo bus
+		// return buses[1].map((busStop)=>{
+		// 	return (<div key={busStop.tag}>{busStop.tag}</div>);
+		// });
+		this.dibujar(buses);
+
+	}
+
+	//metodo para pintar el arreglo _schedule_ del estado 
+	dibujar(buses){
+		const datosSchedule = this.state.datosSchedule;
+		const svg = d3.select("#svg");
+		console.log("svg",svg);
+		const margin = ({top: 20, right: 30, bottom: 30, left: 150});
+		const height = svg.attr("height") - margin.top - margin.bottom;
+		const width = svg.attr("width") - margin.left - margin.right;
+
+		const minDate = d3.min(buses[1], d => d.date);
+	  	const maxDate = new Date(minDate.getTime() + 22*60*60*1000); // minDate + 24 hours
+
+	  const x = d3.scaleTime()
+	  	.domain([ minDate, maxDate ])
+	  	.range([margin.left, width - margin.right]);
+	  
+	  const y = d3.scaleBand()
+	  	.domain(d3.range(buses[1].length))
+	  	.rangeRound([height - margin.bottom, margin.top]);
+	  
+	  const xAxis = g => g
+	  .attr("transform", `translate(0,${height - margin.bottom})`)
+	  .call(d3.axisBottom(x))
+	  
+	  const yAxis = g => g
+	  	.attr("transform", `translate(${margin.left},0)`)
+	  	.call(d3.axisLeft(y)
+	  		.tickFormat((d) => datosSchedule.header.stop[d].content));  
+
+	  const line = d3.line()
+	  	.x(d => x(d.date))
+	  	.y((d,i) => y(i) + y.bandwidth()/2);
+
+	  svg.append("g")
+	  .call(xAxis);
+
+	  svg.append("g")
+	  .call(yAxis);
+	  
+	  svg.selectAll(".routes")
+	  .data(buses)
+	  .enter()
+	  .append("path")
+	  .attr("fill", "none")
+	  .attr("stroke", "steelblue")
+	  .attr("stroke-width", 2)
+	  .attr("stroke-linejoin", "round")
+	  .attr("stroke-linecap", "round")
+	  .attr("d", line);
+	  return svg.node(); 
+	}
+
 	//se ejecuta apenas se carge el componente de react
 	componentDidMount(){
-		// Meteor.call("agencyList",(err,res) => {
-		// 	if(err) throw err;
-		// 	console.log(res.data.agency);
-		// 	this.setState({
-		// 		agencias : res.data.agency
-		// 	})
-		// });	
 
 		let tagAgency = "sf-muni";
 		let tagRoute = "N";
 		this.schedule(tagAgency,tagRoute);
-
 	}
 	
 	// {this.xxxxx()}
    	render(){
+		//llamo las datos en el segundo render
+		this.renderBuses();		
+		
 		return( 
 		<div className="App">
 			<TopUI/>
 			<h3>App component React!</h3>
-			<button onClick={this.docuJhon.bind(this)}>Agencias</button>			
-			
+			<button onClick={this.docuJhon.bind(this)}>Agencias</button>	
+			<svg 
+			id ="svg"
+			width="1280" 
+			height="500" 
+			ref = {this.svg}
+			></svg>
+			<h1>fin component react</h1>
 		</div>);
 	}
 }

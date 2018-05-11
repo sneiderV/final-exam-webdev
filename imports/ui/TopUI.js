@@ -6,7 +6,7 @@ export default class TopUI extends Component {
 	render(){
 	return(
 		<div className="TopUI">
-			<p>Parcial Final * Esneider Velandia Gonzalez</p>
+			<p>TopUI</p>
 		</div>
 	);}
 }
