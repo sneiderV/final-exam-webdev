@@ -34,17 +34,15 @@ Meteor.methods({
     return HTTP.get(url);
   },
 
-
-
-
-
-
-  'docJohn'(){
-    let url="https://gist.githubusercontent.com/john-guerra/a0b840ba721ed771dd02d94a855cb595/raw/d68dba41f118bebc438a4f7ade9d27078efdfc09/sfBuses.json"
+  'schedule'(tagAgency,tagRoute){
+    let url = "http://webservices.nextbus.com/service/publicJSONFeed?command=schedule&a="+tagAgency+"&r="+tagRoute;
     return HTTP.get(url);
   },
 
-
+  'docJohn'(){
+    let url="https://gist.githubusercontent.com/john-guerra/6a1716d792a20b029392501a5448479b/raw/e0cf741c90a756adeec848f245ec539e0d0cd629/sfNSchedule"
+    return HTTP.get(url);
+  },
 
   // 'tasks.remove'(taskId) {
   //   check(taskId, String);

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import "../api/remoteReq.js"
 import TopUI from "./TopUI.js";
-import scheduleGraph from "./scheduleGraph.js";
 
 class App extends Component{
 	
@@ -63,6 +62,14 @@ class App extends Component{
         }); 
 	}
 
+	schedule(tagAgency,tagRoute){
+		Meteor.call("schedule",tagAgency,tagRoute,(err,res) => {
+            if(err) throw err;
+            console.log(">> SCHEDULE PARA LA TURA "+tagRoute+" DE LA AGENCIA: "+tagAgency);
+            console.log(res);
+        }); 
+	}
+
 	docuJhon(){
 		
     fetch("https://gist.githubusercontent.com/john-guerra/6a1716d792a20b029392501a5448479b/raw/e0cf741c90a756adeec848f245ec539e0d0cd629/sfNSchedule")
@@ -96,24 +103,6 @@ doc2JhonServer(){
 }
 
 
-	
-	//se ejecuta apenas se carge el componente de react
-	componentDidMount(){
-		// Meteor.call("agencyList",(err,res) => {
-		// 	if(err) throw err;
-		// 	console.log(res.data.agency);
-		// 	this.setState({
-		// 		agencias : res.data.agency
-		// 	})
-		// });	
-		
-		// this.setState({
-		// 	docuJhon : this.docuJhon()
-		// });
-		{this.docuJhon()}
-	
-	}
-
 	renderAgencias(){
 		//siempre existe el state agencias por que lo creo desde que monto el componente
 		return this.state.agencias.map((m) => {
@@ -125,18 +114,29 @@ doc2JhonServer(){
 		});
 	}
 
-	// {this.listaAgencias()}
-	// {this.cargarRutasAgencia()}
-	// {this.infoRutaAgencia()}
-	// {this.prediccion()}
+	//se ejecuta apenas se carge el componente de react
+	componentDidMount(){
+		// Meteor.call("agencyList",(err,res) => {
+		// 	if(err) throw err;
+		// 	console.log(res.data.agency);
+		// 	this.setState({
+		// 		agencias : res.data.agency
+		// 	})
+		// });	
 
+		let tagAgency = "sf-muni";
+		let tagRoute = "N";
+		this.schedule(tagAgency,tagRoute);
+
+	}
+	
+	// {this.xxxxx()}
    	render(){
 		return( 
 		<div className="App">
 			<TopUI/>
 			<h3>App component React!</h3>
 			<button onClick={this.docuJhon.bind(this)}>Agencias</button>			
-			<scheduleGraph  buses = {this.state.datosJhon}> </scheduleGraph>
 			
 		</div>);
 	}
