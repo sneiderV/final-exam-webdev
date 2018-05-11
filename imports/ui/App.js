@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import "../api/remoteReq.js"
+import TopUI from "./TopUI.js";
 
 class App extends Component{
 	
@@ -123,6 +124,7 @@ doc2JhonServer(){
    	render(){
 		return( 
 		<div className="App">
+			<TopUI/>
 			<h3>App component React!</h3>
 			<button onClick={this.cargarData.bind(this)}>Agencias</button>			
 
