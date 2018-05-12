@@ -176,7 +176,7 @@ class App extends Component{
 		const tagR = ReactDOM.findDOMNode(this.refs.tagR).value;
       	
       	d3.selectAll("svg > *").remove();
-      	d3.selectAll("svg > *").remove();
+		
 		this.renderComentarios();
 	    this.setState({ 
       		tagAgency: tagA,
@@ -224,10 +224,10 @@ console.log(filterTags);
       // const currentUser = this.props.currentUser;
       // console.log(">>Este es mi currente user: "+currentUser.username);
       return (
-      	<div key={com._id} className="card" style={{width: 10+'em'}} >
+      	<div key={com._id} className="card" style={{width: 20+'em'}} >
+      		<h6 className="card-header">Comment of: {com.owner}</h6>
       		<div className="card-body">
-      		<h6 className="card-title">Comentario de: {com.owner}</h6>
-      		<p key={com._id} className="card-text"> >> {com.text}</p>
+      		<p key={com._id} className="card-text">{com.text}</p>
       		</div>
       	</div>
       );
@@ -237,7 +237,7 @@ console.log(filterTags);
   	 return (
       	<div className="card" style={{width: 10+'em'}} >
       		<div className="card-body">
-      		<h6 className="card-title">No hay comentarios</h6>
+      		<h6 className="card-title">There are no comments yet</h6>
       		</div>
       	</div>
       );
@@ -263,17 +263,19 @@ console.log(filterTags);
 		<div className="App">
 			<AccountsUIWrapper />
 			<h3>Plan your time!</h3>
-			<div className="card">
-			<p className="font-italic">This is an example that you can search: </p>
-			<p className="font-italic">Agency: actransit & Route: C </p>
-			<p className="font-italic">Agency: actransit & Route: BSN </p>
+			<div className="card" style={{width: 30+'em'}} >
+			<p className="font-italic">This is an example that you can search:  
+				<br/> Agency: actransit & Route: C 
+				<br/> Agency: actransit & Route: BSN </p>
 			</div>
+			<br/>
 			<form >
-			  <div className="row">
-			  <div className="col-auto"> <label>Agencia</label> </div>
+			  <div className="form-row align-items-center">
+			  <div className="col-1"></div>
+			  <div className="col-auto"> <label>Agency</label> </div>
 			  <div className="col-auto">
 			     <select id="inputState" ref="tagA" className="form-control">
-					<option defaultValue>Escoje...</option>
+					<option defaultValue>Choose...</option>
 					<option>actransit</option> <option>jhu-apl</option> <option>art</option> <option>atlanta-sc</option>
 					<option>bigbluebus</option> <option>brockton</option> <option>camarillo</option> <option>ccrta</option>
 					<option>chapel-hill</option> <option>charm-city</option> <option>ccny</option> <option>oxford-ms</option>
@@ -293,28 +295,37 @@ console.log(filterTags);
 					<option>vista</option> <option>wku</option> <option>winston-salem</option> <option>york-pa</option>
 				 </select>
 			  </div>
-			  <div className="col-auto"> <label>Ruta</label> </div>
-			  <div className="col-auto"> <input type="text" className="form-control mb-2" ref="tagR" placeholder="TAG Ruta"/>	</div>
-              <button type="submit" className="btn btn-primary"  onClick={this.handleSearch.bind(this)}>Buscar</button>
+			  <div className="col-auto"> <label>Route</label> </div>
+			  <div className="col-auto"> <input type="text" className="form-control mb-2" ref="tagR" placeholder="TAG of Route"/>	</div>
+              <div className="col-auto"> <button type="submit" className="btn btn-primary"  onClick={this.handleSearch.bind(this)}>Search</button> </div>
+			  <div className="col-1"></div>
 			  </div>
 			</form>
-
+			
 			<svg 
 			id ="svg"
 			width="1280" 
 			height="500" 
 			ref = {this.svg}
 			></svg>
-
-			<form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
-            <input type="text" ref="textInput" placeholder="Escribe un nuevo comentario y presiona Enter!" width="100"/>
+<div className="comentarioRow">
+			<div className="row">
+			<div className="col-2"></div>
+			<div className="col-8">
+			<form onSubmit={this.handleSubmit.bind(this)} >
+			<p className="font-weight-light">let's know your opinion</p>
+            <input type="text" className="form-control" ref="textInput" placeholder="Write a comment and then press Enter!" width="100"/>
             </form>
-
+            <br/>
+            </div>
+            <div className="col-2"></div>
+            </div>
             <div className="row">
-            <div className="col-1"></div>
-          	{this.renderComentarios()}	
-          	<div className="col-1"></div>
+            
+            {this.renderComentarios()}	
+          	
         	</div>
+</div>
 		</div>);
 	}
 }

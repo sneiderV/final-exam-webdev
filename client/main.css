@@ -1,1 +1,6 @@
 /* CSS declarations go here */
+.comentarioRow{
+	background-color: #ffe6cc;
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
