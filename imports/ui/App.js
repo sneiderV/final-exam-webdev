@@ -222,7 +222,7 @@ class App extends Component{
   	let filterComentarios = this.props.comentarios;
 console.log(">>>> comentarios");
 console.log(filterComentarios);
-  	 let filterTags = filterComentarios.filter((c) => {return (c.tagAgencia).includes("ac")});
+  	 let filterTags = filterComentarios.filter((c) => {return (c.tagAgencia).includes(this.state.tagAgency)});
 console.log(">>>> comentarios con filtrooooo: ");
 console.log(filterTags);
 
