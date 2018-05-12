@@ -4,7 +4,12 @@ import PropTypes from "prop-types";
 import "../api/remoteReq.js"
 import TopUI from "./TopUI.js";
 import * as d3 from "d3";
+import ReactDOM from 'react-dom';
 
+
+import AccountsUIWrapper from './AccountsUIWrapper.js';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Comentarios } from '../api/comentarios.js'
 class App extends Component{
 	
 	constructor(props){
@@ -181,6 +186,41 @@ class App extends Component{
 	  return svg.node(); 
 	}
 
+	//manejo los eventos del input
+	handleSubmit(event) {
+    event.preventDefault();
+ 
+    // Find the text field via the React ref
+    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
+ 	const owner = this.props.currentUser.username;
+    Comentarios.insert({
+      text,
+      owner,
+      createdAt: new Date(), // current time
+    });
+ 
+    // Clear form despues de hacer Enter
+    ReactDOM.findDOMNode(this.refs.textInput).value = '';
+  }
+
+  renderComentarios(){
+  	//filtro los comentarios
+  	let filterComentarios = this.props.comentarios;
+
+  	 return filterComentarios.map((com) => {
+      console.log(">> este es mi comentario");
+      console.log(com);
+      const currentUser = this.props.currentUser;
+      console.log(">>Este es mi currente user: "+currentUser.username);
+      return (
+      	<div key={com._id} >
+      		<p key={com._id}> Comentario de: {com.owner} </p>
+        	<p key={com._id}> Comentario: {com.text} </p>
+      	</div>
+      );
+    });
+  }
+
 	//se ejecuta apenas se carge el componente de react
 	componentDidMount(){
 
@@ -197,6 +237,7 @@ class App extends Component{
 		return( 
 		<div className="App">
 			<TopUI/>
+			<AccountsUIWrapper />
 			<h3>App component React!</h3>
 			<button onClick={this.docuJhon.bind(this)}>Agencias</button>	
 			<svg 
@@ -205,6 +246,15 @@ class App extends Component{
 			height="500" 
 			ref = {this.svg}
 			></svg>
+
+			<form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
+            <input type="text" ref="textInput" placeholder="Escribe un nuevo comentario y presiona Enter!" width="100"/>
+            </form>
+
+            <ul>
+          		{this.renderComentarios()}
+        	</ul>
+
 			<h1>fin component react</h1>
 		</div>);
 	}
@@ -214,4 +264,10 @@ App.propTypes={
 
 };
 
-export default App;
+//export default App;
+export default withTracker(() => {
+  return {
+    comentarios: Comentarios.find({}, { sort: { createdAt: -1 } }).fetch(),
+    currentUser: Meteor.user(),
+  };
+})(App);
