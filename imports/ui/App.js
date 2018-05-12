@@ -184,6 +184,12 @@ class App extends Component{
 		const tagR = ReactDOM.findDOMNode(this.refs.tagR).value;
 		
 	    console.log("tag a: "+tagA+"tag r: "+tagR);
+	    this.renderComentarios();
+	    this.setState({ 
+      		tagAgency: tagA,
+      		tagRoute: tagR,
+      	})
+      	console.log("estados nuevos:"+this.state.tagAgencia);
 	    d3.selectAll("svg > *").remove();
 	    this.schedule(tagA,tagR);
 	}
@@ -214,8 +220,14 @@ class App extends Component{
   renderComentarios(){
   	//filtro los comentarios
   	let filterComentarios = this.props.comentarios;
+console.log(">>>> comentarios");
+console.log(filterComentarios);
+  	 let filterTags = filterComentarios.filter((c) => {return (c.tagAgencia).includes("ac")});
+console.log(">>>> comentarios con filtrooooo: ");
+console.log(filterTags);
 
-  	 return filterComentarios.map((com) => {
+  	 //return filterComentarios.map((com) => {
+  	 return filterTags.map((com) => {	
       console.log(">> este es mi comentario");
       console.log(com);
       // const currentUser = this.props.currentUser;
