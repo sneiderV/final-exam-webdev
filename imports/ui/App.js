@@ -261,7 +261,9 @@ console.log(filterTags);
 		
 		return( 
 		<div className="App">
+			<div className="logRow">
 			<AccountsUIWrapper />
+			</div>
 			<div>
 			<img src="https://raw.githubusercontent.com/sneiderV/final-exam-webdev/master/logo.png" className="rounded float-left" style={{width: 150+'px', height: 150+'px'}} alt="log route"/>
 			<h1>Plan your time!</h1>

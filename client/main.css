@@ -3,10 +3,19 @@ h1 {
 	color: #583222;
 	font-size: 30px;
 }
+p {
+	color: #583222;
+}
 
 .comentarioRow {
 	background-color: #ffa94d;
 	padding-top: 25px;
 	padding-bottom: 25px;
+}
+
+.logRow {
+	background-color: #ffa94d;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
