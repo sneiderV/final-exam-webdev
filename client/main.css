@@ -1,6 +1,12 @@
 /* CSS declarations go here */
-.comentarioRow{
-	background-color: #ffe6cc;
+h1 {
+	color: #583222;
+	font-size: 30px;
+}
+
+.comentarioRow {
+	background-color: #ffa94d;
 	padding-top: 25px;
 	padding-bottom: 25px;
 }
+

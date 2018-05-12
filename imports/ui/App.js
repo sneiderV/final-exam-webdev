@@ -262,7 +262,10 @@ console.log(filterTags);
 		return( 
 		<div className="App">
 			<AccountsUIWrapper />
-			<h3>Plan your time!</h3>
+			<div>
+			<img src="https://raw.githubusercontent.com/sneiderV/final-exam-webdev/master/logo.png" className="rounded float-left" style={{width: 150+'px', height: 150+'px'}} alt="log route"/>
+			<h1>Plan your time!</h1>
+			</div>
 			<div className="card" style={{width: 30+'em'}} >
 			<p className="font-italic">This is an example that you can search:  
 				<br/> Agency: actransit & Route: C 
