@@ -19,3 +19,13 @@ p {
 	padding-bottom: 5px;
 }
 
+.footerRow {
+	background-color: #583222;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.footerText{
+	color: #ffa94d;
+}
+
+
