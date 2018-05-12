@@ -82,8 +82,7 @@ class App extends Component{
         }); 
 	}
 
-	docuJhon(){
-		
+	docuJhon(){	
     fetch("https://gist.githubusercontent.com/john-guerra/6a1716d792a20b029392501a5448479b/raw/e0cf741c90a756adeec848f245ec539e0d0cd629/sfNSchedule")
       .then(response => response.json())
       .then(data => {
@@ -106,23 +105,16 @@ class App extends Component{
 		});
 	}
 
+	//metodo de John para obtener el arreglo de buses
 	renderSchedule(){
-		if(!this.state.datosSchedule.tr)
-			return <p>Cargando...</p>;
+		if(!this.state.datosSchedule.tr)return <p>...</p>;
 		let buses = [];
-
 		this.state.datosSchedule.tr.forEach((bus)=>{
 			let route = bus.stop.filter((d) => d.content!=="--");
 			route.forEach((d) => d.date = new Date(+d.epochTime));    
 			buses.push(route);
 		});
-		// console.log("buses",buses);
-		// Estoy haciendo el map para un solo bus
-		// return buses[1].map((busStop)=>{
-		// 	return (<div key={busStop.tag}>{busStop.tag}</div>);
-		// });
 		this.pintarSchedule(buses);
-
 	}
 
 	//metodo para pintar el arreglo _schedule_ del estado 
@@ -182,15 +174,14 @@ class App extends Component{
 		event.preventDefault();
 		const tagA = ReactDOM.findDOMNode(this.refs.tagA).value;
 		const tagR = ReactDOM.findDOMNode(this.refs.tagR).value;
-		
-	    console.log("tag a: "+tagA+"tag r: "+tagR);
-	    this.renderComentarios();
+      	
+      	d3.selectAll("svg > *").remove();
+      	d3.selectAll("svg > *").remove();
+		this.renderComentarios();
 	    this.setState({ 
       		tagAgency: tagA,
       		tagRoute: tagR,
       	})
-      	console.log("estados nuevos:"+this.state.tagAgencia);
-	    d3.selectAll("svg > *").remove();
 	    this.schedule(tagA,tagR);
 	}
 
@@ -222,10 +213,10 @@ class App extends Component{
   	let filterComentarios = this.props.comentarios;
 console.log(">>>> comentarios");
 console.log(filterComentarios);
-  	 let filterTags = filterComentarios.filter((c) => {return (c.tagAgencia).includes(this.state.tagAgency)});
+  	 let filterTags = filterComentarios.filter((c) => {return( (c.tagAgencia).includes(this.state.tagAgency) && (c.tagRuta).includes(this.state.tagRoute))});
 console.log(">>>> comentarios con filtrooooo: ");
 console.log(filterTags);
-
+	if(filterTags.length > 0){
   	 //return filterComentarios.map((com) => {
   	 return filterTags.map((com) => {	
       console.log(">> este es mi comentario");
@@ -233,11 +224,25 @@ console.log(filterTags);
       // const currentUser = this.props.currentUser;
       // console.log(">>Este es mi currente user: "+currentUser.username);
       return (
-      	//<div key={com._id} >
-      		<p key={com._id}> Comentario de: {com.owner} >> {com.text}</p>
-      	//</div>
+      	<div key={com._id} className="card" style={{width: 10+'em'}} >
+      		<div className="card-body">
+      		<h6 className="card-title">Comentario de: {com.owner}</h6>
+      		<p key={com._id} className="card-text"> >> {com.text}</p>
+      		</div>
+      	</div>
       );
     });
+}
+  	 else{
+  	 return (
+      	<div className="card" style={{width: 10+'em'}} >
+      		<div className="card-body">
+      		<h6 className="card-title">No hay comentarios</h6>
+      		</div>
+      	</div>
+      );
+  	 }
+
   }
 
 	//se ejecuta apenas se carge el componente de react
@@ -249,17 +254,20 @@ console.log(filterTags);
 	}
 	
 	// {this.xxxxx()}
+	// <button onClick={this.docuJhon.bind(this)}>Agencias</button>	
    	render(){
 		//llamo las datos en el segundo render
 		this.renderSchedule();		
 		
 		return( 
 		<div className="App">
-			<TopUI/>
 			<AccountsUIWrapper />
-			<h3>App component React!</h3>
-			<button onClick={this.docuJhon.bind(this)}>Agencias</button>	
-			
+			<h3>Plan your time!</h3>
+			<div className="card">
+			<p className="font-italic">This is an example that you can search: </p>
+			<p className="font-italic">Agency: actransit & Route: C </p>
+			<p className="font-italic">Agency: actransit & Route: BSN </p>
+			</div>
 			<form >
 			  <div className="row">
 			  <div className="col-auto"> <label>Agencia</label> </div>
@@ -302,11 +310,11 @@ console.log(filterTags);
             <input type="text" ref="textInput" placeholder="Escribe un nuevo comentario y presiona Enter!" width="100"/>
             </form>
 
-            <ul>
-          		{this.renderComentarios()}
-        	</ul>
-
-			<h1>fin component react</h1>
+            <div className="row">
+            <div className="col-1"></div>
+          	{this.renderComentarios()}	
+          	<div className="col-1"></div>
+        	</div>
 		</div>);
 	}
 }
